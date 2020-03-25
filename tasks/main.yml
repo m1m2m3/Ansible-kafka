@@ -1,2 +1,13 @@
 ---
-# tasks file for kafka1
+- name: include variable file based on env
+  include_vars: "{{ env }}_linux.yml"
+  when: os not in ['windows'] 
+
+- name: include variable file based on env
+  include_vars: "{{ env }}_windows.yml"
+  when: os in ['windows'] 
+
+- name: Include Linux Install Agent Playbooks
+  include_tasks: Install_linux_agent.yml
+  when: os not in ['windows'] and tags_list in ['install']
+
