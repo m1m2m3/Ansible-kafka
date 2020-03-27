@@ -19,10 +19,46 @@
 - name: Provide the user permission 
   shell: chown -R kafka:kafka /opt/kafka*
   
-- name: Add monitor logs
+- name: Add service config for Kafka  zookeeper_service
   copy:
      content: "{{kafka_service}}"
      dest: "/etc/systemd/system/kafka.service"
      force: yes
+     
+- name: Add service config for Zookeeper
+  copy:
+     content: "{{ookeeper_service}}"
+     dest: "/etc/systemd/system/zookeeper.service"
+     force: yes
   
+- name: Reload the Systemd
+  shell: systemctl daemon-reload
   
+- name: Restart the Kafka service
+  shell: systemctl start kafka
+  
+- nameL Restart the Zookeeper Service
+  shell: systemctl start zookeeper
+  
+- name: Enable Kafka service automatic start on boot 
+  shell: systemctl enable kafka.service
+  
+- name: Enable Zookeeper service automatic start on boot 
+  shell: systemctl enable zookeeper.service
+  
+# we need a medium these two exchange messages on. We create a new channel of data called "topic" in Kafka's terms,
+#where the provider will publish, and where the consumer will subscribe to. We'll call the topic "Opstree". 
+#We'll use the "kafka" user to create the topic:
+
+- name: Create topic
+  shell: /opt/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic Opstree
+
+- name: Start Consumer client
+  shell: /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic Opstree --from-beginning
+  
+  # We leave the console and the client running in it open. This console is where we will receive the message we publish with the producer client.
+  
+  # On another terminal, we start a producer client, and publish some messages to the topic we created. We can query Kafka for available topics:
+  #  $ /opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:2181 Opstree
+  
+    
