@@ -1,0 +1,19 @@
+---
+
+- block:
+  - name: Kafka status
+    shell: systemctl status kafka.service
+    register: kafka_status
+    no_log: true
+  - name: verify kafka is installed
+    debug:
+      msg: "kafka is installed"
+  rescue:
+    - debug:
+        msg: "kafka is not installed"
+    - meta: end_play  
+- debug: msg="kafka is running"
+  when: kafka_status.rc == 0
+
+- debug: msg="kafka is not running"
+  when: kafka_status.rc != 0
