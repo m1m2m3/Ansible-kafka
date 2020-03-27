@@ -1,4 +1,4 @@
-Role Name
+Ansible-kafka
 =========
 
 A brief description of the role goes here.
@@ -6,33 +6,67 @@ A brief description of the role goes here.
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Kafka and Zookeeper package file
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+As per this program we used only one variable file /vars/test_linux.yml for configure zookeeper.service and kafka.service
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Including an example of how to use your role (for instance, with variables passed in as parameters):
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Call ansible kafka file
+      include_role:
+        name: Ansible-kafka
+      vars:
+        os: linux
+        env: test
+        tags: always
 
-License
+Detailed info
 -------
+<h3>What is Kafka</h3>
+Apache Kafka is an open-source stream-processing software platform developed by LinkedIn and donated to the Apache Software Foundation, written in Scala and Java. The project aims to provide a unified, high-throughput, low-latency platform for handling real-time data feeds
 
-BSD
+<h3>What is Zookeeper</h3>
+Apache ZooKeeper is a software project of the Apache Software Foundation. It is essentially a service for distributed systems offering a hierarchical key-value store, which is used to provide a distributed configuration service, synchronization service, and naming registry for large distributed systems.
+
+<h3>other in general </h3>
+ *Create the unit file /etc/systemd/system/zookeeper.service with the following content
+
+ *we don't need to write the version number three times because of the symlink we created. The same applies to the next unit file for Kafka, /etc/systemd/system/kafka.service
+ 
+ *To test functionality, we'll connect to Kafka with one producer and one consumer client. The messages provided by the producer should appear on the console of the consumer. But before this we need a medium these two exchange messages on. We create a new channel of data called topic in Kafka's terms, where the provider will publish, and where the consumer will subscribe to. We'll call the topic Opstree. We'll use the kafka user to create the topic:
+ 
+ To test functionality, we'll connect to Kafka with one producer and one consumer client. The messages provided by the producer should appear on the console of the consumer. But before this we need a medium these two exchange messages on. We create a new channel of data called topic in Kafka's terms, where the provider will publish, and where the consumer will subscribe to. We'll call the topic Opstree. We'll use the kafka user to create the topic:
+$ /opt/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic Opstree
+ 
+
+We start a consumer client from the command line that will subscribe to the (at this point empty) topic created in the previous step:
+$ /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic Opstree --from-beginning
+We leave the console and the client running in it open. This console is where we will receive the message we publish with the producer client.
+On another terminal, we start a producer client, and publish some messages to the topic we created. We can query Kafka for available topics:
+$ /opt/kafka/bin/kafka-topics.sh --list --zookeeper localhost:2181
+Opstree
+And connect to the one the consumer is subscribed, then send a message:
+$ /opt/kafka/bin/kafka-console-producer.sh --broker-list localhost:9092 --topic Opstree
+> Welcome to Opstree #2
+
+At the consumer terminal, the message should appear shortly:
+$ /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic FirstKafkaTopic --from-beginning
+ Welcome to Opstree #2
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Akshay Namdev
