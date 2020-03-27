@@ -27,7 +27,7 @@
      
 - name: Add service config for Zookeeper
   copy:
-     content: "{{ookeeper_service}}"
+     content: "{{zookeeper_service}}"
      dest: "/etc/systemd/system/zookeeper.service"
      force: yes
   
