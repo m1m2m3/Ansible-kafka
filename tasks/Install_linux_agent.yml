@@ -1,6 +1,22 @@
 ---
-- name: Copy package
-  src: "file"
-  dest: "/opt/"
+- name: Get the file and unarchive to /opt/
+  unarchive:
+       src: http://apache.mirror.anlx.net/kafka/2.4.1/kafka_2.12-2.4.1.tgz
+       dest: /opt/
+       remote_src: yes 
+- name: And create a symlink called /opt/kafka that points to the now created Kafka
+  shell: ln -s /opt/kafka_2.12-2.4.1 /opt/kafka
+  
+- name: Get Zookeeper file and unarchive to /opt
+  unarchive:
+       src: https://downloads.apache.org/zookeeper/zookeeper-3.5.7/apache-zookeeper-3.5.7-bin.tar.gz
+       dest: /opt/
+       remote_src: yes
+       
+- name: Create a non-privileged user that will run both zookeeper and kafka service
+  shell: useradd kafka
+  
+- name: Provide the user permission 
+  shell: chown -R kafka:kafka /opt/kafka*
   
   
