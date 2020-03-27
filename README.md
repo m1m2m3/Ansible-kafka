@@ -21,17 +21,17 @@ Example Playbook
 
 Including an example of how to use your role (for instance, with variables passed in as parameters):
 
----
-- hosts: localhost
-  gather_facts: no
-  tasks:
-    - name: Call ansible kafka file
-      include_role:
-        name: Ansible-kafka
-      vars:
-        os: linux
-        env: test
-        tags: always
+<br>---</br>
+<br> hosts: localhost</br>
+<br> gather_facts: no</br>
+<br> tasks:</br>
+<br>   - name: Call ansible kafka file</br>
+<br>     include_role:</br>
+<br>       name: Ansible-kafka</br>
+<br>     vars:</br>
+<br>       os: linux</br>
+<br>       env: test</br>
+<br>       tags: always</br>
 
 Detailed info
 -------
