@@ -33,6 +33,9 @@ Including an example of how to use your role (for instance, with variables passe
 <br>       env: test</br>
 <br>       tags: always</br>
 
+<h3> To run the playbook </h3>
+ ansible-playbook playbook.yml -e "os=linux tags_list=install"
+
 Detailed info
 -------
 <h3>What is Kafka</h3>
