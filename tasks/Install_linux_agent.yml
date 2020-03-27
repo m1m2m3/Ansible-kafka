@@ -19,4 +19,10 @@
 - name: Provide the user permission 
   shell: chown -R kafka:kafka /opt/kafka*
   
+- name: Add monitor logs
+  copy:
+     content: "{{kafka_service}}"
+     dest: "/etc/systemd/system/kafka.service"
+     force: yes
+  
   
