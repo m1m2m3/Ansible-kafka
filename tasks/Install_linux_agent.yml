@@ -1,0 +1,6 @@
+---
+- name: Copy package
+  src: "file"
+  dest: "/opt/"
+  
+  
