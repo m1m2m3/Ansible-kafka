@@ -7,7 +7,11 @@
   include_vars: "{{ env }}_windows.yml"
   when: os in ['windows'] 
 
-- name: Include Linux Install Agent Playbooks
+- name: Include Kafka Installation on Linux Agent Playbooks
   include_tasks: Install_linux_agent.yml
   when: os not in ['windows'] and tags_list in ['install']
+  
+- name: Include Kafka verification Agent Playbooks
+  include_tasks: verify_kafka_installation.yml
+  when: os not in ['windows'] and tags_list in ['verify']
 
