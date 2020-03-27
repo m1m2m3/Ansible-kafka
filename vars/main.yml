@@ -1,2 +1,35 @@
 ---
-# vars file for kafka1
+kafka_service: |
+   [Unit]
+   Description=Apache Kafka
+   Requires=zookeeper.service
+   After=zookeeper.service
+   
+   [Service]
+   Type=simple
+   
+   User=kafka
+   Group=kafka
+   
+   ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
+   ExecStop=/opt/kafka/bin/kafka-server-stop.sh
+   
+   [Install]
+   WantedBy=multi-user.target
+
+zookeeper_service: |
+   [Unit]
+   Description=zookeeper
+   After=syslog.target network.target
+   
+   [Service]
+   Type=simple
+   
+   User=kafka
+   Group=kafka
+   
+   ExecStart=/opt/kafka/bin/zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties
+   ExecStop=/opt/kafka/bin/zookeeper-server-stop.sh
+   
+   [Install]
+   WantedBy=multi-user.target
